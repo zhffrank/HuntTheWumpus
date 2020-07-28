@@ -1,0 +1,12 @@
+﻿  GameController.cpp
+D:\zGitHub\HumpTheWampus\HumpTheWampus\GameController.cpp(56,46): warning C4099: 'GameLocations': type name first seen using 'class' now seen using 'struct'
+D:\zGitHub\HumpTheWampus\HumpTheWampus\GameLocations.h(20): message : see declaration of 'GameLocations'
+D:\zGitHub\HumpTheWampus\HumpTheWampus\GameController.cpp(75,43): warning C4099: 'GameLocations': type name first seen using 'class' now seen using 'struct'
+D:\zGitHub\HumpTheWampus\HumpTheWampus\GameLocations.h(20): message : see declaration of 'GameLocations'
+D:\zGitHub\HumpTheWampus\HumpTheWampus\GameController.cpp(79,35): warning C4099: 'GameLocations': type name first seen using 'class' now seen using 'struct'
+D:\zGitHub\HumpTheWampus\HumpTheWampus\GameLocations.h(20): message : see declaration of 'GameLocations'
+D:\zGitHub\HumpTheWampus\HumpTheWampus\GameController.cpp(88,39): warning C4099: 'GameLocations': type name first seen using 'class' now seen using 'struct'
+D:\zGitHub\HumpTheWampus\HumpTheWampus\GameLocations.h(20): message : see declaration of 'GameLocations'
+D:\zGitHub\HumpTheWampus\HumpTheWampus\GameController.cpp(113,42): warning C4099: 'GameLocations': type name first seen using 'class' now seen using 'struct'
+D:\zGitHub\HumpTheWampus\HumpTheWampus\GameLocations.h(20): message : see declaration of 'GameLocations'
+  HumpTheWampus.vcxproj -> D:\zGitHub\HumpTheWampus\Debug\HumpTheWampus.exe
