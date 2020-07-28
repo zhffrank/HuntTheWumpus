@@ -1,0 +1,2 @@
+D:\zGitHub\HuntTheWumpus\Console\src\HTWConsoleApplication\Debug\HTWConsoleApplication.exe
+D:\zGitHub\HuntTheWumpus\Console\src\HTWConsoleApplication\Debug\HTWConsoleApplication.pdb
