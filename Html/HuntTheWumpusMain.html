@@ -40,12 +40,14 @@ function startGame() {
     myScore = new component("30px", "Consolas", "black", 350, 40, "text");
 
     // [Frank] change to Player.gif(image 16x16)
-    myPlayer = new component(30, 30, "blue", 10, 120);
-    // myPlayer = new component(16, 16, "Player.gif", 10, 120, "player");
+    // myPlayer = new component(30, 30, "blue", 10, 120);
+    myPlayer = new component(16, 16, "Player.gif", 10, 120, "image");
 
+    // [Frank] Wumpus
     myWumpus_x = Math.floor(Math.random() * canvas_width); // 150;
     myWumpus_y = Math.floor(Math.random() * canvas_height); // 220;
-    myWumpus = new component(30, 30, "red", myWumpus_x, myWumpus_y);
+    // myWumpus = new component(30, 30, "red", myWumpus_x, myWumpus_y);
+    myWumpus = new component(10, 10, "Wumpus.gif", myWumpus_x, myWumpus_y, "image");
 
     myBackground = new component(656, 270, "grid13x10.png", 0, 0, "background");
 }
@@ -77,6 +79,13 @@ var myGameArea = {
 function component(width, height, color, x, y, type) {
     this.type = type;
     this.gamearea = myGameArea;
+
+    // [Frank] init image/background
+    if (type == "image" || type == "background") {
+        this.image = new Image();
+        this.image.src = color;
+    }
+
     this.width = width;
     this.height = height;
     this.speedX = 0;
@@ -159,12 +168,12 @@ function updateGameArea() {
     if (myGameArea.key && myGameArea.key == 40) {myPlayer.y = myPlayer.y + 1; }
 
     // Frank score
-    myScore.text="SCORE: " + myGameArea.frameNo;
+    // myScore.text="SCORE: " + myGameArea.frameNo;
     // myScore.update();
 
     myWumpus.update();
 
-    myPlayer.newPos();
+    // myPlayer.newPos();
     myPlayer.update();
 
     // Frank
