@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <h1>Welcome to Wumpus</h1>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <style>
 canvas {
@@ -30,15 +29,13 @@ function initGame() {
   myPlayer.y = 120;
 
   // init Wumpus
-  myWumpus.x = Math.floor(Math.random() * canvas_width); // 150;
-  myWumpus.y = Math.floor(Math.random() * canvas_height); // 220;
+  myWumpus.x = Math.floor(Math.random() * canvas_width);
+  myWumpus.y = Math.floor(Math.random() * canvas_height);
 
   myGameArea.frameNo = 1;
 }
 
 function startGame() {
-    myGameArea.start();
-
     // [Frank] score object
     myScore = new component("30px", "Consolas", "black", 350, 40, "text");
 
@@ -53,7 +50,9 @@ function startGame() {
     myWumpus = new component(10, 10, "Wumpus.gif", myWumpus_x, myWumpus_y, "image");
 
     // [Frank] background
-    // myBackground = new component(640, 480, "caves.gif", 0, 0, "image");
+    myBackground = new component(640, 480, "grid13x10.png", 1, 1, "image");
+
+    myGameArea.start();
 }
 
 var myGameArea = {
@@ -101,14 +100,6 @@ function component(width, height, color, x, y, type) {
     this.y = y;    
     this.update = function() {
         ctx = myGameArea.context;
-        ctx.fillStyle = color;
-
-        // added by Frank to limit the object moving in the game area
-        if (this.x < 1) {this.x = this.gamearea.canvas.width;}
-        if (this.x > this.gamearea.canvas.width) {this.x = 1;}
-        if (this.y < 1) {this.y = this.gamearea.canvas.height;}
-        if (this.y > this.gamearea.canvas.height) {this.y = 1;}
-
         if (this.type == "text") {
             ctx.font = this.width + " " + this.height;
             ctx.fillStyle = color;
@@ -121,13 +112,15 @@ function component(width, height, color, x, y, type) {
                 this.width, this.height)
         }
         else {
-          ctx.fillRect(this.x, this.y, this.width, this.height);
+            ctx.fillStyle = color;
+            ctx.fillRect(this.x, this.y, this.width, this.height);
         }
     }
+    /*
     this.newPos = function() {
         this.x += this.speedX;
         this.y += this.speedY;        
-    }
+    }*/
 }
 
 // [Frank] fight wumpus
@@ -163,16 +156,34 @@ function drawRooms() {
   }
 }
 
+// [Frank] to limit the object moving in the game area
+function fixPlayerLocation() {
+    if (myPlayer.x < 1) {myPlayer.x = myGameArea.canvas.width;}
+    if (myPlayer.x > myGameArea.canvas.width) {myPlayer.x = 1;}
+    if (myPlayer.y < 1) {myPlayer.y = myGameArea.canvas.height;}
+    if (myPlayer.y > myGameArea.canvas.height) {myPlayer.y = 1;}
+}
+
+// [Frank] Player response to the keyboard arrow keys
+function movePlayer() {
+    if (myGameArea.key && myGameArea.key == 37) {myPlayer.x = myPlayer.x - 1; fixPlayerLocation();}
+    if (myGameArea.key && myGameArea.key == 39) {myPlayer.x = myPlayer.x + 1; fixPlayerLocation();}
+    if (myGameArea.key && myGameArea.key == 38) {myPlayer.y = myPlayer.y - 1; fixPlayerLocation();}
+    if (myGameArea.key && myGameArea.key == 40) {myPlayer.y = myPlayer.y + 1; fixPlayerLocation();}
+}
+
 function updateGameArea() {
     myGameArea.clear();
     
     myGameArea.frameNo += 1;
 
-    // [Frank] Player response to the keyboard arrow keys
-    if (myGameArea.key && myGameArea.key == 37) {myPlayer.x = myPlayer.x - 1; }
-    if (myGameArea.key && myGameArea.key == 39) {myPlayer.x = myPlayer.x + 1; }
-    if (myGameArea.key && myGameArea.key == 38) {myPlayer.y = myPlayer.y - 1; }
-    if (myGameArea.key && myGameArea.key == 40) {myPlayer.y = myPlayer.y + 1; }
+    // Frank
+    // drawRooms();
+    // Update the background before updating other components
+    // to make sure the other components are dispalyed on top of the background.
+    myBackground.update();
+
+    movePlayer();
 
     // [Frank] Enable auto cruise mode
     if (AutoCruiseMode == true) {
@@ -188,10 +199,6 @@ function updateGameArea() {
 
     // myPlayer.newPos();
     myPlayer.update();
-
-    // Frank
-    // drawRooms();
-    // myBackground.update();
 
     // [Frank] deal with meeting with Wumpus
     fightWumpus();
@@ -216,6 +223,7 @@ function ToggleGameMode() {
 // }
 
 </script>
+<h1>Welcome to Wumpus</h1>
 <p>Make sure this window has focus, then you can use the arrow keys on you keyboard to move</p>
 <div style="text-align:center;width:480px;">
   <button onclick="ToggleDemoMode()">Toggle Demo</button>
