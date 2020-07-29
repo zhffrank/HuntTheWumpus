@@ -16,12 +16,16 @@ var myPlayer;
 var myWumpus;
 var myScore;
 var myBackground;
+var mySound;
+var myMusic;
 
 var AutoCruiseMode = false;
 var GamePauseStatus = false;
 
 var canvas_width = 640;
 var canvas_height = 480;
+
+var foundWumpus = false;
 
 function initGame() {
   // init Player
@@ -123,18 +127,41 @@ function component(width, height, color, x, y, type) {
     }*/
 }
 
-// [Frank] fight wumpus
-function fightWumpus() {
-    if ((myPlayer.x > myWumpus.x) && (myPlayer.x < myWumpus.x + myWumpus.width)) {
-      if ((myPlayer.y > myWumpus.y) && (myPlayer.y < myWumpus.y + myWumpus.height)) {
-        alert("You found Wumpus!");
-        myGameArea.stop();
-        // initGame();
-      }
+// [Frank] see if the point is in side Wumpus
+function CheckPointInWumpus(x, y) {
+  if ((x > myWumpus.x) && (x < myWumpus.x + myWumpus.width)) {
+    if ((y > myWumpus.y) && (y < myWumpus.y + myWumpus.height)) {
+      foundWumpus = true;
+      // initGame();
     }
+  }
+}
+
+function fightWumpus() {
+  var x, y;
+
+  x = myPlayer.x;
+  y = myPlayer.y;
+  CheckPointInWumpus(x, y);
+  x = myPlayer.x+myPlayer.width;
+  y = myPlayer.y;
+  CheckPointInWumpus(x, y);
+  x = myPlayer.x+myPlayer.width;
+  y = myPlayer.y+myPlayer.height;
+  CheckPointInWumpus(x, y);
+  x = myPlayer.x;
+  y = myPlayer.y+myPlayer.height;
+  CheckPointInWumpus(x, y);
+
+  if (foundWumpus == true) {
+    alert("You found Wumpus!");
+    myGameArea.stop();
+    // initGame();
+  }
 }
 
 // [Frank] draw rooms
+// perf is very poor, should find a better way to do it
 function drawRooms() {
   gamearea = myGameArea;
   ctx = myGameArea.context;
@@ -189,6 +216,7 @@ function updateGameArea() {
     if (AutoCruiseMode == true) {
       myPlayer.x = myPlayer.x + Math.floor((Math.random() * 4)) - 1;
       myPlayer.y = myPlayer.y + Math.floor((Math.random() * 4)) - 1;
+      fixPlayerLocation();
     }
 
     // Frank score
