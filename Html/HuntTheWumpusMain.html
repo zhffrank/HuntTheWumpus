@@ -18,6 +18,9 @@ var myWumpus;
 var myScore;
 var myBackground;
 
+var AutoCruiseMode = false;
+var GamePauseStatus = false;
+
 var canvas_width = 640;
 var canvas_height = 480;
 
@@ -44,12 +47,13 @@ function startGame() {
     myPlayer = new component(16, 16, "Player.gif", 10, 120, "image");
 
     // [Frank] Wumpus
-    myWumpus_x = Math.floor(Math.random() * canvas_width); // 150;
-    myWumpus_y = Math.floor(Math.random() * canvas_height); // 220;
+    myWumpus_x = Math.floor(Math.random() * canvas_width);
+    myWumpus_y = Math.floor(Math.random() * canvas_height);
     // myWumpus = new component(30, 30, "red", myWumpus_x, myWumpus_y);
     myWumpus = new component(10, 10, "Wumpus.gif", myWumpus_x, myWumpus_y, "image");
 
-    myBackground = new component(656, 270, "grid13x10.png", 0, 0, "background");
+    // [Frank] background
+    // myBackground = new component(640, 480, "caves.gif", 0, 0, "image");
 }
 
 var myGameArea = {
@@ -72,7 +76,10 @@ var myGameArea = {
         this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
     },
     stop : function() {
-       clearInterval(this.interval);
+        clearInterval(this.interval);
+    },
+    continue : function() {
+        this.interval = setInterval(updateGameArea, 20);
     }
 }
 
@@ -107,7 +114,7 @@ function component(width, height, color, x, y, type) {
             ctx.fillStyle = color;
             ctx.fillText(this.text, this.x, this.y);
         }
-        else if (type == "image" || type == "background" || type == "player") {
+        else if (type == "image" || type == "background") {
             ctx.drawImage(this.image, 
                 this.x, 
                 this.y,
@@ -167,6 +174,12 @@ function updateGameArea() {
     if (myGameArea.key && myGameArea.key == 38) {myPlayer.y = myPlayer.y - 1; }
     if (myGameArea.key && myGameArea.key == 40) {myPlayer.y = myPlayer.y + 1; }
 
+    // [Frank] Enable auto cruise mode
+    if (AutoCruiseMode == true) {
+      myPlayer.x = myPlayer.x + Math.floor((Math.random() * 4)) - 1;
+      myPlayer.y = myPlayer.y + Math.floor((Math.random() * 4)) - 1;
+    }
+
     // Frank score
     // myScore.text="SCORE: " + myGameArea.frameNo;
     // myScore.update();
@@ -184,6 +197,18 @@ function updateGameArea() {
     fightWumpus();
 }
 
+function ToggleDemoMode() {
+  AutoCruiseMode = !AutoCruiseMode;
+}
+
+function ToggleGameMode() {
+  GamePauseStatus = !GamePauseStatus;
+  if (GamePauseStatus == true) {
+    myGameArea.stop();
+  } else {
+    myGameArea.continue();
+  }
+}
 // Frank
 // function everyinterval(n) {
    // if ((myGameArea.frameNo / n) % 1 == 0) {return true;}
@@ -192,5 +217,9 @@ function updateGameArea() {
 
 </script>
 <p>Make sure this window has focus, then you can use the arrow keys on you keyboard to move</p>
+<div style="text-align:center;width:480px;">
+  <button onclick="ToggleDemoMode()">Toggle Demo</button>
+  <button onclick="ToggleGameMode()">Toggle Game</button>
+</div>
 </body>
 </html>
