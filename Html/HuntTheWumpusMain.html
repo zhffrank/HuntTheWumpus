@@ -16,6 +16,7 @@ canvas {
 var myPlayer;
 var myWumpus;
 var myScore;
+var myBackground;
 
 var canvas_width = 640;
 var canvas_height = 480;
@@ -34,19 +35,26 @@ function initGame() {
 
 function startGame() {
     myGameArea.start();
+
+    // [Frank] score object
     myScore = new component("30px", "Consolas", "black", 350, 40, "text");
+
+    // [Frank] change to Player.gif(image 16x16)
     myPlayer = new component(30, 30, "blue", 10, 120);
+    // myPlayer = new component(16, 16, "Player.gif", 10, 120, "player");
 
     myWumpus_x = Math.floor(Math.random() * canvas_width); // 150;
     myWumpus_y = Math.floor(Math.random() * canvas_height); // 220;
     myWumpus = new component(30, 30, "red", myWumpus_x, myWumpus_y);
+
+    myBackground = new component(656, 270, "grid13x10.png", 0, 0, "background");
 }
 
 var myGameArea = {
     canvas : document.createElement("canvas"),
     start : function() {
-        this.canvas.width = canvas_width; // 640; // 480;
-        this.canvas.height = canvas_height; // 480;
+        this.canvas.width = canvas_width;
+        this.canvas.height = canvas_height;
         this.context = this.canvas.getContext("2d");
         document.body.insertBefore(this.canvas, document.body.childNodes[0]);
         this.frameNo = 0;
@@ -78,17 +86,25 @@ function component(width, height, color, x, y, type) {
     this.update = function() {
         ctx = myGameArea.context;
         ctx.fillStyle = color;
+
+        // added by Frank to limit the object moving in the game area
+        if (this.x < 1) {this.x = this.gamearea.canvas.width;}
+        if (this.x > this.gamearea.canvas.width) {this.x = 1;}
+        if (this.y < 1) {this.y = this.gamearea.canvas.height;}
+        if (this.y > this.gamearea.canvas.height) {this.y = 1;}
+
         if (this.type == "text") {
             ctx.font = this.width + " " + this.height;
             ctx.fillStyle = color;
             ctx.fillText(this.text, this.x, this.y);
-        } else {
-          // added by Frank to limit the object moving in the game area
-          if (this.x < 1) {this.x = this.gamearea.canvas.width;}
-          if (this.x > this.gamearea.canvas.width) {this.x = 1;}
-          if (this.y < 1) {this.y = this.gamearea.canvas.height;}
-          if (this.y > this.gamearea.canvas.height) {this.y = 1;}
-
+        }
+        else if (type == "image" || type == "background" || type == "player") {
+            ctx.drawImage(this.image, 
+                this.x, 
+                this.y,
+                this.width, this.height)
+        }
+        else {
           ctx.fillRect(this.x, this.y, this.width, this.height);
         }
     }
@@ -98,7 +114,7 @@ function component(width, height, color, x, y, type) {
     }
 }
 
-// Frank
+// [Frank] fight wumpus
 function fightWumpus() {
     if ((myPlayer.x > myWumpus.x) && (myPlayer.x < myWumpus.x + myWumpus.width)) {
       if ((myPlayer.y > myWumpus.y) && (myPlayer.y < myWumpus.y + myWumpus.height)) {
@@ -109,6 +125,7 @@ function fightWumpus() {
     }
 }
 
+// [Frank] draw rooms
 function drawRooms() {
   gamearea = myGameArea;
   ctx = myGameArea.context;
@@ -134,16 +151,16 @@ function updateGameArea() {
     myGameArea.clear();
     
     myGameArea.frameNo += 1;
-    myPlayer.speedX = 0;
-    myPlayer.speedY = 0;    
-    if (myGameArea.key && myGameArea.key == 37) {myPlayer.speedX = -1; }
-    if (myGameArea.key && myGameArea.key == 39) {myPlayer.speedX = 1; }
-    if (myGameArea.key && myGameArea.key == 38) {myPlayer.speedY = -1; }
-    if (myGameArea.key && myGameArea.key == 40) {myPlayer.speedY = 1; }
+
+    // [Frank] Player response to the keyboard arrow keys
+    if (myGameArea.key && myGameArea.key == 37) {myPlayer.x = myPlayer.x - 1; }
+    if (myGameArea.key && myGameArea.key == 39) {myPlayer.x = myPlayer.x + 1; }
+    if (myGameArea.key && myGameArea.key == 38) {myPlayer.y = myPlayer.y - 1; }
+    if (myGameArea.key && myGameArea.key == 40) {myPlayer.y = myPlayer.y + 1; }
 
     // Frank score
     myScore.text="SCORE: " + myGameArea.frameNo;
-    myScore.update();
+    // myScore.update();
 
     myWumpus.update();
 
@@ -151,7 +168,10 @@ function updateGameArea() {
     myPlayer.update();
 
     // Frank
-    drawRooms();
+    // drawRooms();
+    // myBackground.update();
+
+    // [Frank] deal with meeting with Wumpus
     fightWumpus();
 }
 
